@@ -1,0 +1,56 @@
+{
+  "name": "x-global-api",
+  "version": "1.0.0",
+  "description": "A global toast & loading & modal api library without any dependencies",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/esm/index.d.ts",
+  "scripts": {
+    "lint": "lint-staged",
+    "dev": "vite",
+    "clean": "rimraf dist",
+    "build:esm": "rollup -c rollup.config.esm.js",
+    "build:dts": "tsc --emitDeclarationOnly --declaration --project tsconfig.json --outDir dist/esm",
+    "build:umd": "rollup -c rollup.config.umd.js",
+    "build": "npm run clean && npm run build:esm && npm run build:dts && npm run build:umd",
+    "release": "standard-version && pnpm build",
+    "prepare": "husky install",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "files": [
+    "dist"
+  ],
+  "lint-staged": {
+    "src/**/*.ts": "eslint --fix"
+  },
+  "sideEffects": false,
+  "keywords": [
+    "loading",
+    "toast",
+    "modal"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.19.3",
+    "@babel/preset-env": "^7.19.4",
+    "@rollup/plugin-babel": "^6.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.40.0",
+    "@typescript-eslint/parser": "^5.40.0",
+    "esbuild": "^0.15.11",
+    "eslint": "^8.25.0",
+    "eslint-config-prettier": "^8.5.0",
+    "husky": "^8.0.1",
+    "lint-staged": "^13.0.3",
+    "postcss": "^8.4.18",
+    "prettier": "^2.7.1",
+    "rimraf": "^3.0.2",
+    "rollup": "^3.1.0",
+    "rollup-plugin-esbuild": "^4.10.1",
+    "rollup-plugin-postcss": "^4.0.2",
+    "standard-version": "^9.5.0",
+    "typescript": "^4.8.4",
+    "vite": "^3.1.8"
+  }
+}

@@ -1,0 +1,258 @@
+/* variables */
+/* -------------------------------------- */
+:root {
+  --global-api-toast-bg-color: rgba(0, 0, 0, 0.7);
+  --global-api-toast-text-color: #fff;
+  --global-api-toast-radius: 8px;
+  --global-api-toast-z-index: 6000;
+
+  --global-api-modal-overlay-bg-color: rgba(0, 0, 0, 0.7);
+  --global-api-modal-bg-color: #fff;
+  --global-api-modal-bg-active-color: #ededed;
+  --global-api-modal-text-color: #000;
+  --global-api-modal-radius: 8px;
+  --global-api-modal-z-index: 5000;
+  --global-api-modal-btn-border-color: #ededed;
+}
+
+/* toast */
+/* -------------------------------------- */
+.global-api-toast-overlay {
+  position: fixed;
+  z-index: var(--global-api-toast-z-index);
+  background: transparent;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.global-api-toast-main {
+  position: fixed;
+  z-index: var(--global-api-toast-z-index);
+  background: var(--global-api-toast-bg-color);
+  color: var(--global-api-toast-text-color);
+  border-radius: var(--global-api-toast-radius);
+  box-sizing: border-box;
+  overflow: hidden;
+  padding: 10px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.global-api-toast-main--top,
+.global-api-toast-main--bottom {
+  transform: translate(-50%, 0);
+}
+
+.global-api-toast-main--inline {
+  display: flex;
+  align-items: center;
+}
+
+.global-api-toast-main--inline .global-api-toast-icon {
+  width: 24px;
+  height: 24px;
+  margin: 0 5px 0 0;
+  flex-shrink: 0;
+}
+
+.global-api-toast-icon {
+  width: 48px;
+  height: 48px;
+  margin: 5px 10px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.global-api-toast-title {
+  font-size: 14px;
+  line-height: 26px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+/* modal */
+/* -------------------------------------- */
+.global-api-modal-overlay {
+  position: fixed;
+  z-index: var(--global-api-modal-z-index);
+  background: var(--global-api-modal-overlay-bg-color);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.global-api-modal-main {
+  position: fixed;
+  z-index: var(--global-api-modal-z-index);
+  background: var(--global-api-modal-bg-color);
+  color: var(--global-api-modal-text-color);
+  border-radius: var(--global-api-modal-radius);
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  overflow: hidden;
+  font-size: 16px;
+}
+
+.global-api-modal-title {
+  padding-top: 25px;
+  font-weight: bold;
+  text-align: center;
+  line-height: 1;
+}
+
+.global-api-modal-content {
+  text-align: center;
+  line-height: 1.8;
+  padding: 30px 16px;
+}
+
+.global-api-modal-footer--inline {
+  display: flex;
+  position: relative;
+}
+
+.global-api-modal-footer-btn {
+  flex: 1;
+  text-align: center;
+  line-height: 50px;
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+  font-weight: bold;
+}
+
+.global-api-modal-footer-btn:active {
+  background-color: var(--global-api-modal-bg-active-color);
+}
+
+.global-api-modal-footer--inline::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--global-api-modal-btn-border-color);
+  transform: scaleY(0.5);
+}
+
+.global-api-modal-footer--inline .global-api-modal-footer-btn:not(:first-of-type)::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 1px;
+  background: var(--global-api-modal-btn-border-color);
+  transform: scaleX(0.5);
+}
+
+.global-api-modal-footer--block .global-api-modal-footer-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--global-api-modal-btn-border-color);
+  transform: scaleY(0.5);
+}
+
+/* animation: fade in/out */
+/* -------------------------------------- */
+.global-api-fade-in {
+  animation: globalApiFadeIn 0.25s ease-in-out both;
+}
+
+.global-api-fade-out {
+  animation: globalApiFadeOut 0.25s ease-in-out both;
+}
+
+@keyframes globalApiFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes globalApiFadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* animation: down in/out */
+/* -------------------------------------- */
+.global-api-down-in {
+  animation: globalApiDownIn 0.25s ease-in-out both;
+}
+
+.global-api-down-out {
+  animation: globalApiDownOut 0.25s ease-in-out both;
+}
+
+@keyframes globalApiDownIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, calc(-100% - 30px));
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+@keyframes globalApiDownOut {
+  from {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, calc(-100% - 30px));
+  }
+}
+
+/* animation: up in/out */
+/* -------------------------------------- */
+.global-api-up-in {
+  animation: globalApiUpIn 0.25s ease-in-out both;
+}
+
+.global-api-up-out {
+  animation: globalApiUpOut 0.25s ease-in-out both;
+}
+
+@keyframes globalApiUpIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, calc(100% + 30px));
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+@keyframes globalApiUpOut {
+  from {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, calc(100% + 30px));
+  }
+}
