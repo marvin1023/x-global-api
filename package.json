@@ -1,6 +1,6 @@
 {
   "name": "x-global-api",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A global toast & loading & modal api library without any dependencies",
   "type": "module",
   "main": "dist/index.js",
@@ -25,12 +25,16 @@
     "src/**/*.ts": "eslint --fix"
   },
   "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/marvin1023/x-global-api.git"
+  },
   "keywords": [
     "loading",
     "toast",
     "modal"
   ],
-  "author": "",
+  "author": "marvin1023",
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.19.3",
