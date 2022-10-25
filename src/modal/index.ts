@@ -67,14 +67,14 @@ export class Modal {
   generateHTML() {
     const { wrapClass, footerTexts, footerLayout, width, title, content, animation } = this.options;
     this.wrap = document.createElement('div');
-    this.wrap.classList.add('global-api-modal');
+    this.wrap.classList.add('global-api-modal', `global-api-modal-${animation}-in`);
 
     if (wrapClass) {
       this.wrap.classList.add(wrapClass);
     }
 
     // HTML main
-    const mainClass = `global-api-modal-main global-api-${animation}-in`;
+    const mainClass = `global-api-modal-main`;
     const footerClass = `global-api-modal-footer global-api-modal-footer--${footerLayout}`;
 
     const btnHTML = footerTexts!.reduce((prev, next, index) => {
@@ -137,11 +137,9 @@ export class Modal {
 
     this.isHiding = true;
     const { animation } = this.options;
-    const mainNode = this.wrap.querySelector('.global-api-modal-main');
-    const overlayNode = this.wrap.querySelector('.global-api-modal-overlay');
 
     const animationendHandler = () => {
-      mainNode?.removeEventListener('animationend', animationendHandler);
+      this.wrap?.removeEventListener('animationend', animationendHandler);
       this.offEventListener();
       this.parent.removeChild(this.wrap!);
       this.wrap = null;
@@ -150,9 +148,8 @@ export class Modal {
       callback?.();
     };
 
-    mainNode?.addEventListener('animationend', animationendHandler);
+    this.wrap?.addEventListener('animationend', animationendHandler);
 
-    mainNode?.classList.add(`global-api-${animation}-out`);
-    overlayNode?.classList.add('global-api-fade-out');
+    this.wrap?.classList.add(`global-api-modal-${animation}-out`);
   }
 }

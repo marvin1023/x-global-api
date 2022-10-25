@@ -147,21 +147,23 @@ export interface ModalOptions {
 
 通过 `wrapClass` 属性自定义 class，来覆盖样式。
 
-### 动画说明
+## 动画说明
 
-默认提供 3 组动画，分别为 fade in/out，down in/out，up in/out。可自定义动画样式。
+Toast 根据显示位置上、中、下，提供了 3 组动画，分别为 fade in/out，down in/out，up in/out。可自定义动画样式。而 modal 只提供一种 fade in/out 动画。
 
-#### fade in/out
+### Toast & Modal fade in/out
 
 ```css
 /* animation: fade in/out */
 /* -------------------------------------- */
-.global-api-fade-in {
-  animation: globalApiFadeIn 0.25s ease-in-out both;
+.global-api-toast-fade-in,
+.global-api-modal-fade-in {
+  animation: globalApiFadeIn 0.3s ease-in-out both;
 }
 
-.global-api-fade-out {
-  animation: globalApiFadeOut 0.25s ease-in-out both;
+.global-api-toast-fade-out,
+.global-api-modal-fade-out {
+  animation: globalApiFadeOut 0.3s ease-in-out both;
 }
 
 @keyframes globalApiFadeIn {
@@ -183,17 +185,17 @@ export interface ModalOptions {
 }
 ```
 
-#### down in/out
+### Toast down in/out
 
 ```css
 /* animation: down in/out */
 /* -------------------------------------- */
-.global-api-down-in {
-  animation: globalApiDownIn 0.25s ease-in-out both;
+.global-api-toast-down-in .global-api-toast-main {
+  animation: globalApiDownIn 0.3s ease-in-out both;
 }
 
-.global-api-down-out {
-  animation: globalApiDownOut 0.25s ease-in-out both;
+.global-api-toast-down-out .global-api-toast-main {
+  animation: globalApiDownOut 0.3s ease-in-out both;
 }
 
 @keyframes globalApiDownIn {
@@ -219,17 +221,17 @@ export interface ModalOptions {
 }
 ```
 
-#### down in/out
+#### Toast down in/out
 
 ```css
 /* animation: up in/out */
 /* -------------------------------------- */
-.global-api-up-in {
-  animation: globalApiUpIn 0.25s ease-in-out both;
+.global-api-toast-up-in .global-api-toast-main {
+  animation: globalApiUpIn 0.3s ease-in-out both;
 }
 
-.global-api-up-out {
-  animation: globalApiUpOut 0.25s ease-in-out both;
+.global-api-toast-up-out .global-api-toast-main {
+  animation: globalApiUpOut 0.3s ease-in-out both;
 }
 
 @keyframes globalApiUpIn {
@@ -255,12 +257,73 @@ export interface ModalOptions {
 }
 ```
 
-#### 自定义动画
+### 自定义动画
 
-设置 `animation` 属性的值，如为 `hello`，将会以该值添加对应的进入和离开动画 class，进入的 class 为 `.global-api-hello-in`，对应的离开 class 为 `.global-api-hello-out`。
+自定义 `animation` 属性的值，就会生成对应的 class。然后以此 class 就可以自定义动画，注意动画应该使用 animation 关键帧动画，不能使用 transition 动画。
 
-然后将自定义动画样式挂到相应的 class 下即可。
+以自定义 modal 的动画为例。设置 `animation` 的值为 `scale`，将会以该值添加对应的进入和离开动画 class，进入的 class 为 `.global-api-modal-scale-in`，对应的离开 class 为 `.global-api-modal-scale-out`。（如果为 toast，则相应的为 class 把 `modal` 关键词换成 `toast` 即可。）
 
-### 注意事项
+不论是 toast 还是 modal，其实都是一个容器，然后包括主体内容和遮罩两部分。
+
+```html
+<!-- toast 结构 -->
+
+<!-- 动画的进入和离开 class 挂着该节点上-->
+<div class="global-api-toast">
+  <!-- 如果 mask 为 true 则有，否则没有该层 -->
+  <div class="global-api-toast-overlay"></div>
+  <div class="global-api-toast-main">...</div>
+</div>
+
+<!-- modal 结构 -->
+<!-- 动画的进入和离开 class 挂着该节点上-->
+<div class="global-api-modal">
+  <div class="global-api-modal-overlay"></div>
+  <div class="global-api-modal-main">...</div>
+</div>
+```
+
+由于动画涉及到两层，遮罩层和主体内容层，对于遮罩层来说，一个渐隐渐现动画即可，而内容主体就可以搞各种动画了。所以如果要自定义动画，其实应该有两个动画，一个是全局的渐隐渐现动画，一个是内容主体的动画。以上面的 modal 的 scale 为例：
+
+```css
+/* animation: scale in/out */
+/* -------------------------------------- */
+/* 整体 fade 动画 */
+.global-api-modal-scale-in {
+  animation: globalApiFadeIn 0.3s ease-in-out both;
+}
+.global-api-modal-scale-out {
+  animation: globalApiFadeOut 0.3s ease-in-out both;
+}
+
+/* 主体内容 scale 动画 */
+.global-api-modal-scale-in .global-api-modal-main {
+  animation: globalApiScaleIn 0.3s ease-in-out both;
+}
+
+.global-api-modal-scale-out .global-api-modal-main {
+  animation: globalApiScaleOut 0.3s ease-in-out both;
+}
+
+@keyframes globalApiScaleIn {
+  from {
+    transform: scale(0.5);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes globalApiScaleOut {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(0.5);
+  }
+}
+```
+
+## 注意事项
 
 - toast 和 loading 公用一个实例，每次只能有一个出现，如果有新的要 show，那么老的就会被移除掉。

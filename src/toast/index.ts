@@ -108,10 +108,9 @@ export class Toast {
 
     this.isHiding = true;
     const { animation } = this.options;
-    const mainNode = this.wrap.querySelector('.global-api-toast-main');
 
     const animationendHandler = () => {
-      mainNode?.removeEventListener('animationend', animationendHandler);
+      this.wrap!.removeEventListener('animationend', animationendHandler);
       this.parent.removeChild(this.wrap!);
       this.wrap = null;
       this.isHiding = false;
@@ -119,9 +118,9 @@ export class Toast {
       callback?.();
     };
 
-    mainNode?.addEventListener('animationend', animationendHandler);
+    this.wrap.addEventListener('animationend', animationendHandler);
 
-    mainNode?.classList.add(`global-api-${animation}-out`);
+    this.wrap.classList.add(`global-api-toast-${animation}-out`);
   }
 
   generateHTML() {
@@ -129,14 +128,14 @@ export class Toast {
     const { animation } = this.options;
 
     this.wrap = document.createElement('div');
-    this.wrap.classList.add('global-api-toast');
+    this.wrap.classList.add('global-api-toast', `global-api-toast-${animation}-in`);
 
     if (wrapClass) {
       this.wrap.classList.add(wrapClass);
     }
 
     // HTML main
-    let mainClass = `global-api-toast-main global-api-${animation}-in`;
+    let mainClass = `global-api-toast-main`;
     if (layout === 'inline') {
       mainClass += ` global-api-toast-main--inline`;
     }
@@ -167,7 +166,7 @@ export class Toast {
 
     const innerHTML = maskHTML + mainHTMlBegin + iconHTML + titleHTML + mainHTMlEnd;
 
-    this.wrap!.innerHTML = innerHTML;
-    this.parent.appendChild(this.wrap!);
+    this.wrap.innerHTML = innerHTML;
+    this.parent.appendChild(this.wrap);
   }
 }

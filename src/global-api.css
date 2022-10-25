@@ -77,9 +77,19 @@
 
 /* modal */
 /* -------------------------------------- */
-.global-api-modal-overlay {
+.global-api-modal {
   position: fixed;
   z-index: var(--global-api-modal-z-index);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.global-api-modal-overlay {
+  position: absolute;
   background: var(--global-api-modal-overlay-bg-color);
   top: 0;
   left: 0;
@@ -88,14 +98,10 @@
 }
 
 .global-api-modal-main {
-  position: fixed;
-  z-index: var(--global-api-modal-z-index);
+  position: relative;
   background: var(--global-api-modal-bg-color);
   color: var(--global-api-modal-text-color);
   border-radius: var(--global-api-modal-radius);
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
   overflow: hidden;
   font-size: 16px;
 }
@@ -167,12 +173,14 @@
 
 /* animation: fade in/out */
 /* -------------------------------------- */
-.global-api-fade-in {
-  animation: globalApiFadeIn 0.25s ease-in-out both;
+.global-api-toast-fade-in,
+.global-api-modal-fade-in {
+  animation: globalApiFadeIn 0.3s ease-in-out both;
 }
 
-.global-api-fade-out {
-  animation: globalApiFadeOut 0.25s ease-in-out both;
+.global-api-toast-fade-out,
+.global-api-modal-fade-out {
+  animation: globalApiFadeOut 0.3s ease-in-out both;
 }
 
 @keyframes globalApiFadeIn {
@@ -195,12 +203,12 @@
 
 /* animation: down in/out */
 /* -------------------------------------- */
-.global-api-down-in {
-  animation: globalApiDownIn 0.25s ease-in-out both;
+.global-api-toast-down-in .global-api-toast-main {
+  animation: globalApiDownIn 0.3s ease-in-out both;
 }
 
-.global-api-down-out {
-  animation: globalApiDownOut 0.25s ease-in-out both;
+.global-api-toast-down-out .global-api-toast-main {
+  animation: globalApiDownOut 0.3s ease-in-out both;
 }
 
 @keyframes globalApiDownIn {
@@ -227,12 +235,12 @@
 
 /* animation: up in/out */
 /* -------------------------------------- */
-.global-api-up-in {
-  animation: globalApiUpIn 0.25s ease-in-out both;
+.global-api-toast-up-in .global-api-toast-main {
+  animation: globalApiUpIn 0.3s ease-in-out both;
 }
 
-.global-api-up-out {
-  animation: globalApiUpOut 0.25s ease-in-out both;
+.global-api-toast-up-out .global-api-toast-main {
+  animation: globalApiUpOut 0.3s ease-in-out both;
 }
 
 @keyframes globalApiUpIn {
