@@ -1,7 +1,8 @@
 import { defineConfig } from 'rollup';
-import { babel } from '@rollup/plugin-babel';
-import esbuild from 'rollup-plugin-esbuild';
+import typescript from 'rollup-plugin-typescript2';
 import postcss from 'rollup-plugin-postcss';
+import license from 'rollup-plugin-license';
+import { terser } from 'rollup-plugin-terser';
 
 export default defineConfig({
   input: './src/index.ts',
@@ -12,18 +13,18 @@ export default defineConfig({
       name: 'globalApi',
     },
   ],
+
   plugins: [
-    esbuild({
-      target: 'es2015',
-      minify: true,
-    }),
-    babel({
-      presets: ['@babel/preset-env'],
-      exclude: 'node_modules/**',
-      babelHelpers: 'bundled',
-    }),
-    postcss({
-      plugins: [],
+    postcss(),
+    typescript({ tsconfigOverride: { compilerOptions: { declaration: false } } }),
+    terser(),
+    license({
+      banner: {
+        content: {
+          file: './LICENSE',
+          encoding: 'utf-8', // Default is utf-8
+        },
+      },
     }),
   ],
 });

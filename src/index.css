@@ -87,6 +87,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
+
+  &.global-api-modal--dark {
+    --modal-bg-color: rgba(60, 61, 66, 1);
+    --modal-bg-active-color: rgba(255, 255, 255, 0.1);
+    --modal-text-color: #fff;
+    --modal-btn-border-color: rgba(255, 255, 255, 0.1);
+  }
 }
 .global-api-modal-overlay {
   position: absolute;

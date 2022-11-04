@@ -1,4 +1,4 @@
-import './global-api.css';
+import './index.css';
 import { Toast, ToastOptions } from './toast/index';
 import { Modal, ModalOptions } from './modal/index';
 

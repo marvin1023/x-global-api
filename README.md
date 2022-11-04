@@ -22,6 +22,9 @@ npm i x-global-api --save
 ```ts
 import { showToast, hideToast, ToastOptions } from 'x-global-api';
 
+// es 模块导入使用，手动引入 css 文件
+import 'x-global-api/dist/esm/index.css';
+
 // toast 默认会自动关闭
 // 如不需要自动关闭，可设置 duration 为 0，或设置一个超大的值
 // 默认参数
@@ -327,3 +330,5 @@ Toast 根据显示位置上、中、下，提供了 3 组动画，分别为 fade
 ## 注意事项
 
 - toast 和 loading 公用一个实例，每次只能有一个出现，如果有新的要 show，那么老的就会被移除掉。
+- 该库 TS 编译的 `target` 为 `ES2015`（即为最基础版本的 es6）。
+- 如果为 es 模块导入使用，则需要手动引入 css 文件，如果是 umd 使用，则已经自动打包，不需要再手动引入

@@ -1,6 +1,6 @@
 {
   "name": "x-global-api",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "A global toast & loading & modal api library without any dependencies",
   "type": "module",
   "main": "dist/index.js",
@@ -11,9 +11,8 @@
     "dev": "vite",
     "clean": "rimraf dist",
     "build:esm": "rollup -c rollup.config.esm.js",
-    "build:dts": "tsc --emitDeclarationOnly --declaration --project tsconfig.json --outDir dist/esm",
     "build:umd": "rollup -c rollup.config.umd.js",
-    "build": "npm run clean && npm run build:esm && npm run build:dts && npm run build:umd",
+    "build": "npm run clean && npm run build:esm && npm run build:umd",
     "release": "standard-version && pnpm build",
     "prepare": "husky install",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -37,12 +36,8 @@
   "author": "marvin1023",
   "license": "ISC",
   "devDependencies": {
-    "@babel/core": "^7.19.3",
-    "@babel/preset-env": "^7.19.4",
-    "@rollup/plugin-babel": "^6.0.0",
     "@typescript-eslint/eslint-plugin": "^5.40.0",
     "@typescript-eslint/parser": "^5.40.0",
-    "esbuild": "^0.15.11",
     "eslint": "^8.25.0",
     "eslint-config-prettier": "^8.5.0",
     "husky": "^8.0.1",
@@ -50,10 +45,13 @@
     "postcss": "^8.4.18",
     "prettier": "^2.7.1",
     "rimraf": "^3.0.2",
-    "rollup": "^3.1.0",
-    "rollup-plugin-esbuild": "^4.10.1",
+    "rollup": "^3.2.5",
+    "rollup-plugin-license": "^3.0.1",
     "rollup-plugin-postcss": "^4.0.2",
+    "rollup-plugin-terser": "^7.0.2",
+    "rollup-plugin-typescript2": "^0.34.1",
     "standard-version": "^9.5.0",
+    "tslib": "^2.4.1",
     "typescript": "^4.8.4",
     "vite": "^3.1.8"
   }
