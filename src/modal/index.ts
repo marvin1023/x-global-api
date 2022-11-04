@@ -13,6 +13,7 @@ export interface ModalOptions {
   width?: string;
   maskCanClose?: boolean;
   animation?: 'fade' | string;
+  isDarkModel?: boolean;
 }
 
 export class Modal {
@@ -34,6 +35,7 @@ export class Modal {
       footerLayout: 'inline',
       maskCanClose: true,
       animation: 'fade',
+      isDarkModel: false,
     };
   }
 
@@ -65,12 +67,16 @@ export class Modal {
   }
 
   generateHTML() {
-    const { wrapClass, footerTexts, footerLayout, width, title, content, animation } = this.options;
+    const { wrapClass, footerTexts, footerLayout, width, title, content, animation, isDarkModel } = this.options;
     this.wrap = document.createElement('div');
     this.wrap.classList.add('global-api-modal', `global-api-modal-${animation}-in`);
 
     if (wrapClass) {
       this.wrap.classList.add(wrapClass);
+    }
+
+    if (isDarkModel) {
+      this.wrap.classList.add('global-api-modal--dark');
     }
 
     // HTML main

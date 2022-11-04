@@ -67,6 +67,7 @@ import { showModal, hideModal, ModalOptions } from 'x-global-api';
 //   footerLayout: 'inline',
 //   maskCanClose: true,
 //   animation: 'fade',
+//   isDarkModel: false,
 // }
 showModal(options: ModalOptions); // ModalOptions 见下面 TS 类型
 hideModal();
@@ -120,6 +121,7 @@ export interface ModalOptions {
   width?: string;
   maskCanClose?: boolean;
   animation?: 'fade' | string;
+  isDarkModel?: boolean;
 }
 ```
 
