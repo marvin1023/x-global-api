@@ -49,7 +49,7 @@ export class Modal {
     }
 
     Object.assign(this.options, options);
-    const { title, content, parent } = options;
+    const { title, content, parent } = this.options;
 
     if (!content && !title) {
       console.error('content or title is required!');

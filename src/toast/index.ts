@@ -74,7 +74,7 @@ export class Toast {
     }
 
     Object.assign(this.options, options);
-    const { title, iconUrl, parent, duration } = options;
+    const { title, iconUrl, parent, duration } = this.options;
 
     if (iconUrl) {
       this.iconMap.custom = iconUrl;
