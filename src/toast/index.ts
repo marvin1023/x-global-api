@@ -17,6 +17,7 @@ export interface ToastOptions {
   offset?: string;
   layout?: ToastLayout;
   animation?: ToastAnimation;
+  onAfterLeave?(): void;
 }
 
 export class Toast {
@@ -107,7 +108,7 @@ export class Toast {
     }
 
     this.isHiding = true;
-    const { animation } = this.options;
+    const { animation, onAfterLeave } = this.options;
 
     const animationendHandler = () => {
       this.wrap!.removeEventListener('animationend', animationendHandler);
@@ -115,6 +116,7 @@ export class Toast {
       this.wrap = null;
       this.isHiding = false;
       this.initOptions();
+      onAfterLeave?.();
       callback?.();
     };
 

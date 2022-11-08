@@ -14,6 +14,7 @@ export interface ModalOptions {
   maskCanClose?: boolean;
   animation?: 'fade' | string;
   isDarkModel?: boolean;
+  onAfterLeave?(): void;
 }
 
 export class Modal {
@@ -142,7 +143,7 @@ export class Modal {
     }
 
     this.isHiding = true;
-    const { animation } = this.options;
+    const { animation, onAfterLeave } = this.options;
 
     const animationendHandler = () => {
       this.wrap?.removeEventListener('animationend', animationendHandler);
@@ -151,6 +152,7 @@ export class Modal {
       this.wrap = null;
       this.isHiding = false;
       this.initOptions();
+      onAfterLeave?.();
       callback?.();
     };
 

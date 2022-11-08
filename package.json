@@ -1,6 +1,6 @@
 {
   "name": "x-global-api",
-  "version": "1.1.3",
+  "version": "1.2.0",
   "description": "A global toast & loading & modal api library without any dependencies",
   "type": "module",
   "main": "dist/index.js",
