@@ -17,9 +17,13 @@
 
 /* toast */
 /* -------------------------------------- */
-.global-api-toast-overlay {
+.global-api-toast {
   position: fixed;
   z-index: var(--global-api-toast-z-index);
+}
+
+.global-api-toast-overlay {
+  position: fixed;
   background: transparent;
   top: 0;
   left: 0;
@@ -29,7 +33,7 @@
 
 .global-api-toast-main {
   position: fixed;
-  z-index: var(--global-api-toast-z-index);
+  z-index: 2;
   background: var(--global-api-toast-bg-color);
   color: var(--global-api-toast-text-color);
   border-radius: var(--global-api-toast-radius);
