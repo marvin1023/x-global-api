@@ -4,10 +4,11 @@
 
 提供各种形式的 toast 及常规的 loading 和 modal。toast 特性如下：
 
-- 默认图标支持 `'success' | 'error' | 'warning' | 'none'` ，可自定义图标；
+- 默认图标支持 `'success' | 'error' | 'warning' | 'loading' | 'none'` ，可自定义图标；
 - 支持纯图标或纯文本提示；
 - 支持图标及文本横向或纵向显示；
 - 支持 toast 垂直方向上，中，下显示；
+- 支持配置默认参数。
 
 ## 安装
 
@@ -20,24 +21,35 @@ npm i x-global-api --save
 ### Toast
 
 ```ts
-import { showToast, hideToast, ToastOptions } from 'x-global-api';
+import { showToast, hideToast, ToastOptions, Toast } from 'x-global-api';
 
 // es 模块导入使用，手动引入 css 文件
 import 'x-global-api/dist/esm/index.css';
 
 // toast 默认会自动关闭
 // 如不需要自动关闭，可设置 duration 为 0，或设置一个超大的值
-// 默认参数
+// 默认参数 Toast.defaultConfig
 // {
-//   icon: 'none',
-//   mask: false,
-//   duration: 2000,
-//   maxWidth: 'auto',
-//   place: 'center',
-//   offset: '10px',
-//   layout: 'block',
-//   animation: 'fade',
-// }
+//     icon: 'none',
+//     mask: false,
+//     duration: 2000,
+//     maxWidth: 'calc(100vw - 32px)',
+//     place: 'center',
+//     layout: 'block',
+//     animation: 'fade',
+//     iconMap: {
+//       success: 'xxx', // success icon 的地址，默认用了一个base64图标，太长，所以这里用xxx表示，下面的 error，warning 一样
+//       error: 'xxx',
+//       warning: 'xxx',
+//       loading: '',
+//       custom: '',
+//       none: '',
+//     },
+//   };
+
+// 可通过静态方法 setconfig 更新默认配置
+Toast.setconfig(config: ToastConfig);
+
 showToast(options: ToastOptions); // ToastOptions 见下面 TS 类型
 hideToast();
 ```
@@ -46,7 +58,7 @@ hideToast();
 
 loading 属于 toast 的特例。toast 默认会自动消失，但是 loading 不会，需要主动调用 hideLoading（或调用新的 showToast 或 showLoading ）。
 
-可通过设置 iconUrl 来自定义 loading 的图标。
+默认 loading 是用 CSS 画的一个简单图标，可以通过 `Toast.setconfig` 指定 `loading` icon。
 
 ```ts
 import { showLoading, hideLoading, LoadingOptions } from 'x-global-api';
@@ -58,9 +70,9 @@ hideLoading();
 ### Modal
 
 ```ts
-import { showModal, hideModal, ModalOptions } from 'x-global-api';
+import { showModal, hideModal, ModalOptions, Modal } from 'x-global-api';
 
-// 默认参数
+// 默认参数 Modal.defaultConfig
 // {
 //   width: '300px',
 //   footerTexts: [{ text: '取消' }, { text: '确认', color: '#00cafc' }],
@@ -69,6 +81,10 @@ import { showModal, hideModal, ModalOptions } from 'x-global-api';
 //   animation: 'fade',
 //   isDarkModel: false,
 // }
+
+// 可通过静态方法 setconfig 更新默认配置
+Modal.setConfig(config: ModalConfig);
+
 showModal(options: ModalOptions); // ModalOptions 见下面 TS 类型
 hideModal();
 ```
@@ -78,51 +94,62 @@ hideModal();
 ```ts
 // toast
 // -----------------------------------------
-export declare type ToastIconType = 'success' | 'error' | 'warning' | 'none' | 'custom';
-export declare type ToastIconMap = Record<ToastIconType, string>;
-export declare type ToastPlace = 'top' | 'center' | 'bottom';
-export declare type ToastLayout = 'inline' | 'block';
-export declare type ToastAnimation = 'fade' | 'down' | 'up' | string;
-export interface ToastOptions {
+export type ToastIconType = 'success' | 'error' | 'warning' | 'loading' | 'custom' | 'none';
+export type ToastIconMap = Record<ToastIconType, string>;
+export type ToastPlace = 'top' | 'center' | 'bottom';
+export type ToastLayout = 'inline' | 'block';
+export type ToastAnimation = 'fade' | 'down' | 'up' | string;
+export type LoadingOptions = Partial<Omit<ToastOptions, 'duration' | 'icon'>>;
+
+export interface ToastConfig {
   icon?: ToastIconType;
-  iconUrl?: string; // 自定义图标
-  title?: string;
   mask?: boolean;
   duration?: number;
-  parent?: Element; // 默认插入到 body 最后，设置该属性则插入到该元素最后
-  wrapClass?: string; // 添加自定义容器 class
-  maxWidth?: string; // 限制最大长度，默认为 auto
-  place?: ToastPlace; // 垂直位置，默认居中，可放在头部或底部
-  offset?: string; // 当为头部或底部时，偏移的上或下的距离
-  layout?: ToastLayout; // 图标与文字是一行显示还是不同行显示
-  // 默认为 fade 动画，如 place 为 top，则默认为 down 动画，如 place 为 bottom，则默认为 up 动画，可自定义，见下面动画说明
+  maxWidth?: string;
+  place?: ToastPlace;
+  layout?: ToastLayout;
   animation?: ToastAnimation;
+  iconMap?: ToastIconMap;
 }
 
-// loading
-// -----------------------------------------
-export type LoadingOptions = Partial<Omit<ToastOptions, 'duration' | 'icon'>>;
+export interface ToastOptionsExcludeConfig {
+  parent?: Element;
+  iconUrl?: string;
+  title?: string;
+  wrapClass?: string;
+  offset?: string;
+  onAfterLeave?(): void;
+}
+
+// show 方法参数 options
+export type ToastOptions = ToastConfig & ToastOptionsExcludeConfig;
 
 // modal
 // -----------------------------------------
 export type ModalFooterText = { text: string; color?: string; key?: string };
-// key 对应 ModalFooterText 中的 key，如没有，则为 index 值。如返回为 true 则不关闭弹窗
-export type ModalFooterCallback = (key: string) => void | boolean;
+export type ModalFooterCallback = (key: string) => void | boolean; // key 对应 ModalFooterText 中的 key，如没有，则为 index 值。
 export type ModalFooterLayout = 'inline' | 'block';
 
-export interface ModalOptions {
-  title?: string;
-  content?: string;
-  footerTexts?: ModalFooterText[]; // 底部按钮数组
-  callback?: ModalFooterCallback; // 点击关闭
-  footerLayout?: ModalFooterLayout; // 底部按钮是 block 单独一行还是 inline 在一行
-  parent?: Element;
-  wrapClass?: string;
+export interface ModalConfig {
   width?: string;
+  footerLayout?: ModalFooterLayout;
+  footerTexts?: ModalFooterText[];
   maskCanClose?: boolean;
   animation?: 'fade' | string;
   isDarkModel?: boolean;
 }
+
+export interface ModalOptionsExcludeConfig {
+  title?: string;
+  content?: string;
+  callback?: ModalFooterCallback;
+  parent?: Element;
+  wrapClass?: string;
+  onAfterLeave?(): void;
+}
+
+// show 方法参数 options
+export type ModalOptions = ModalConfig & ModalOptionsExcludeConfig;
 ```
 
 ### 修改样式说明
@@ -135,6 +162,8 @@ export interface ModalOptions {
 :root {
   --global-api-toast-bg-color: rgba(0, 0, 0, 0.7);
   --global-api-toast-text-color: #fff;
+  --global-api-toast-loading-border-color: #fff; // 默认 loading 图标亮色
+  --global-api-toast-loading-border-bottom-color: rgba(256, 256, 256, 0.5); // 默认 loading 图标暗色
   --global-api-toast-radius: 8px;
   --global-api-toast-z-index: 6000;
 

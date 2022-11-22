@@ -3,6 +3,8 @@
 :root {
   --global-api-toast-bg-color: rgba(0, 0, 0, 0.7);
   --global-api-toast-text-color: #fff;
+  --global-api-toast-loading-border-color: #fff;
+  --global-api-toast-loading-border-bottom-color: rgba(256, 256, 256, 0.5);
   --global-api-toast-radius: 8px;
   --global-api-toast-z-index: 6000;
 
@@ -54,6 +56,10 @@
   align-items: center;
 }
 
+.global-api-toast-main--with-icon {
+  min-width: 120px;
+}
+
 .global-api-toast-main--inline .global-api-toast-icon {
   width: 24px;
   height: 24px;
@@ -64,11 +70,26 @@
 .global-api-toast-icon {
   width: 48px;
   height: 48px;
-  margin: 5px 10px;
+  margin: 10px auto 5px;
   background-size: cover;
   background-repeat: no-repeat;
-  margin-left: auto;
-  margin-right: auto;
+}
+
+.global-api-toast-icon--loading {
+  border: 5px solid var(--global-api-toast-loading-border-color);
+  border-bottom-color: var(--global-api-toast-loading-border-bottom-color);
+  border-radius: 50%;
+  box-sizing: border-box;
+  animation: loadingRotation 1s linear infinite;
+}
+
+@keyframes loadingRotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .global-api-toast-title {
@@ -77,6 +98,7 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+  text-align: center;
 }
 
 /* modal */
