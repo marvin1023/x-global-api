@@ -2,7 +2,7 @@ export type ToastIconType = 'success' | 'error' | 'warning' | 'loading' | 'custo
 export type ToastIconMap = Record<ToastIconType, string>;
 export type ToastPlace = 'top' | 'center' | 'bottom';
 export type ToastLayout = 'inline' | 'block';
-export type ToastAnimation = 'fade' | 'down' | 'up' | string;
+export type ToastAnimation = 'fade' | 'down' | 'up' | 'none' | string;
 export type LoadingOptions = Partial<Omit<ToastOptions, 'duration' | 'icon'>>;
 
 export interface ToastConfig {
@@ -116,6 +116,7 @@ export class Toast {
       }, duration);
     }
   }
+
   hide(callback?: () => void) {
     if (!this.wrap || this.isHiding) {
       return;
@@ -124,12 +125,15 @@ export class Toast {
     this.isHiding = true;
     const { animation, onAfterLeave } = this.options;
 
-    const animationendHandler = () => {
+    const closeHandler = () => {
       if (!this.wrap) {
         return;
       }
 
-      this.wrap.removeEventListener('animationend', animationendHandler);
+      if (animation !== 'none') {
+        this.wrap.removeEventListener('animationend', closeHandler);
+      }
+
       this.parent.removeChild(this.wrap);
       this.wrap = null;
       this.isHiding = false;
@@ -137,9 +141,13 @@ export class Toast {
       callback?.();
     };
 
-    this.wrap.addEventListener('animationend', animationendHandler);
+    if (animation !== 'none') {
+      this.wrap.addEventListener('animationend', closeHandler);
 
-    this.wrap.classList.add(`global-api-toast-${animation}-out`);
+      this.wrap.classList.add(`global-api-toast-${animation}-out`);
+    } else {
+      closeHandler();
+    }
   }
 
   generateHTML() {

@@ -7,7 +7,7 @@ export interface ModalConfig {
   footerLayout?: ModalFooterLayout;
   footerTexts?: ModalFooterText[];
   maskCanClose?: boolean;
-  animation?: 'fade' | string;
+  animation?: 'fade' | 'none' | string;
   isDarkModel?: boolean;
 }
 
@@ -100,7 +100,7 @@ export class Modal {
       }, '');
     }
 
-    const maskHTML = '<div class="global-api-modal-overlay global-api-fade-in"></div>';
+    const maskHTML = '<div class="global-api-modal-overlay"></div>';
     const mainHTMlBegin = `<div class="${mainClass}" style="width: ${width};">`;
 
     const titleHTML = title ? `<div class="global-api-modal-title">${title}</div>` : '';
@@ -163,11 +163,14 @@ export class Modal {
     this.isHiding = true;
     const { animation, onAfterLeave } = this.options;
 
-    const animationendHandler = () => {
+    const closeHandler = () => {
       if (!this.wrap) {
         return;
       }
-      this.wrap.removeEventListener('animationend', animationendHandler);
+      if (animation !== 'none') {
+        this.wrap.removeEventListener('animationend', closeHandler);
+      }
+
       this.offEventListener();
       this.parent.removeChild(this.wrap);
       this.wrap = null;
@@ -176,8 +179,11 @@ export class Modal {
       callback?.();
     };
 
-    this.wrap?.addEventListener('animationend', animationendHandler);
-
-    this.wrap?.classList.add(`global-api-modal-${animation}-out`);
+    if (animation !== 'none') {
+      this.wrap.addEventListener('animationend', closeHandler);
+      this.wrap.classList.add(`global-api-modal-${animation}-out`);
+    } else {
+      closeHandler();
+    }
   }
 }
