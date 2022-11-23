@@ -98,7 +98,7 @@ export type ToastIconType = 'success' | 'error' | 'warning' | 'loading' | 'custo
 export type ToastIconMap = Record<ToastIconType, string>;
 export type ToastPlace = 'top' | 'center' | 'bottom';
 export type ToastLayout = 'inline' | 'block';
-export type ToastAnimation = 'fade' | 'down' | 'up' | string;
+export type ToastAnimation = 'fade' | 'down' | 'up' | 'none' | string;
 export type LoadingOptions = Partial<Omit<ToastOptions, 'duration' | 'icon'>>;
 
 export interface ToastConfig {
@@ -135,7 +135,7 @@ export interface ModalConfig {
   footerLayout?: ModalFooterLayout;
   footerTexts?: ModalFooterText[];
   maskCanClose?: boolean;
-  animation?: 'fade' | string;
+  animation?: 'fade' | 'none' | string;
   isDarkModel?: boolean;
 }
 
@@ -183,7 +183,7 @@ export type ModalOptions = ModalConfig & ModalOptionsExcludeConfig;
 
 ## 动画说明
 
-Toast 根据显示位置上、中、下，提供了 3 组动画，分别为 fade in/out，down in/out，up in/out。可自定义动画样式。而 modal 只提供一种 fade in/out 动画。
+Toast 根据显示位置上、中、下，提供了 3 组动画，分别为 fade in/out，down in/out，up in/out。可自定义动画样式。而 modal 只提供一种 fade in/out 动画。如不需要动画，则设置 `animation` 为 `none` 即可。
 
 ### Toast & Modal fade in/out
 
