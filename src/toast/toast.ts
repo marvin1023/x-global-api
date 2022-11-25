@@ -14,6 +14,7 @@ export interface ToastConfig {
   layout?: ToastLayout;
   animation?: ToastAnimation;
   iconMap?: ToastIconMap;
+  zIndex?: number | 'auto';
 }
 
 export interface ToastOptionsExcludeConfig {
@@ -23,6 +24,7 @@ export interface ToastOptionsExcludeConfig {
   wrapClass?: string;
   offset?: string;
   onAfterLeave?(): void;
+  safeArea?: boolean;
 }
 
 // show 方法参数 options
@@ -36,6 +38,8 @@ export class Toast {
   wrap: Element | null = null;
   isHiding = false;
   options!: ToastInstanceOptions;
+  enterClass: string | '' = '';
+  leaveClass: string | '' = '';
 
   static defaultConfig: Required<ToastConfig> = {
     icon: 'none',
@@ -45,6 +49,7 @@ export class Toast {
     place: 'center',
     layout: 'block',
     animation: 'fade',
+    zIndex: 'auto',
     iconMap: {
       success:
         'data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTYgMTYiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iOCIgY3k9IjgiIHI9IjgiIGZpbGw9IiMxNUQxNzMiPjwvY2lyY2xlPjxwYXRoIGQ9Ik00LjU1MTUxIDcuNjAwMUw3LjE4MjEzIDEwLjIzMDZMMTEuOTE2MSA1LjQ5NjY4IiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PC9wYXRoPjwvc3ZnPg==',
@@ -63,11 +68,8 @@ export class Toast {
   }
 
   show(options: ToastOptions) {
-    // toast 为单例，如果有正在显示的，则先隐藏老的，再显示新的
+    // toast 为单例，如果有正在显示的，则直接忽略
     if (this.wrap) {
-      this.hide(() => {
-        this.show(options);
-      });
       return;
     }
 
@@ -79,7 +81,7 @@ export class Toast {
       };
 
       options.animation = animationMap[place];
-      options.offset = options.offset ?? '10px'; // 默认 offset 为 10px
+      options.offset = options.offset ?? '16px'; // 默认 offset 为 10px
     }
 
     // 如果是 loading
@@ -107,6 +109,7 @@ export class Toast {
     }
 
     this.generateHTML();
+    this.onEventListener();
 
     // auto hide
     if (duration) {
@@ -117,50 +120,65 @@ export class Toast {
     }
   }
 
-  hide(callback?: () => void) {
+  hide() {
     if (!this.wrap || this.isHiding) {
       return;
     }
 
     this.isHiding = true;
-    const { animation, onAfterLeave } = this.options;
-
-    const closeHandler = () => {
-      if (!this.wrap) {
-        return;
-      }
-
-      if (animation !== 'none') {
-        this.wrap.removeEventListener('animationend', closeHandler);
-      }
-
-      this.parent.removeChild(this.wrap);
-      this.wrap = null;
-      this.isHiding = false;
-      onAfterLeave?.();
-      callback?.();
-    };
+    const { animation } = this.options;
 
     if (animation !== 'none') {
-      this.wrap.addEventListener('animationend', closeHandler);
-
-      this.wrap.classList.add(`global-api-toast-${animation}-out`);
+      this.wrap.classList.add(this.leaveClass);
     } else {
-      closeHandler();
+      this.finish();
+    }
+  }
+
+  finish() {
+    if (!this.wrap) {
+      return;
+    }
+
+    this.offEventListener();
+    this.parent.removeChild(this.wrap);
+    this.wrap = null;
+    this.isHiding = false;
+    this.options.onAfterLeave?.();
+  }
+
+  onEventListener() {
+    this.wrap?.addEventListener('animationend', this.wrapAnimationEndHandler.bind(this));
+  }
+
+  offEventListener() {
+    this.wrap?.removeEventListener('animationend', this.wrapAnimationEndHandler.bind(this));
+  }
+
+  wrapAnimationEndHandler() {
+    const classNames = this.wrap?.className;
+    if (classNames?.includes(this.enterClass)) {
+      this.wrap?.classList.remove(this.enterClass);
+    }
+
+    if (classNames?.includes(this.leaveClass)) {
+      this.finish();
     }
   }
 
   generateHTML() {
-    const { place, offset, layout, mask, icon, maxWidth, title, wrapClass } = this.options;
+    const { place, offset, layout, mask, icon, maxWidth, title } = this.options;
     const { iconMap } = Toast.defaultConfig;
     const { animation } = this.options;
 
-    this.wrap = document.createElement('div');
-    this.wrap.classList.add('global-api-toast', `global-api-toast-${animation}-in`);
-
-    if (wrapClass) {
-      this.wrap.classList.add(wrapClass);
+    if (animation !== 'none') {
+      this.enterClass = `global-api-toast-${animation}-in`;
+      this.leaveClass = `global-api-toast-${animation}-out`;
     }
+
+    this.wrap = document.createElement('div');
+
+    this.wrapCssHandler();
 
     const hasIcon = icon !== 'none';
 
@@ -201,5 +219,30 @@ export class Toast {
 
     this.wrap.innerHTML = innerHTML;
     this.parent.appendChild(this.wrap);
+  }
+
+  wrapCssHandler() {
+    const { zIndex, wrapClass, safeArea, place } = this.options;
+
+    if (!this.wrap) {
+      return;
+    }
+
+    this.wrap.classList.add('global-api-toast');
+    if (zIndex !== 'auto') {
+      this.wrap.setAttribute('style', `z-index: ${zIndex}`);
+    }
+
+    if (this.enterClass) {
+      this.wrap.classList.add(this.enterClass);
+    }
+
+    if (wrapClass) {
+      this.wrap.classList.add(wrapClass);
+    }
+
+    if (safeArea && place !== 'center') {
+      this.wrap.classList.add('global-api-toast--safe-area');
+    }
   }
 }

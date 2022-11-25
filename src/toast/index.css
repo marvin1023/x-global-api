@@ -1,0 +1,163 @@
+/* variables */
+/* -------------------------------------- */
+:root {
+  --global-api-toast-bg-color: rgba(0, 0, 0, 0.7);
+  --global-api-toast-text-color: #fff;
+  --global-api-toast-loading-border-color: rgba(256, 256, 256, 0.5);
+  --global-api-toast-loading-border-bottom-color: #fff;
+  --global-api-toast-radius: 8px;
+  --global-api-toast-z-index: 6000;
+}
+
+/* toast */
+/* -------------------------------------- */
+.global-api-toast {
+  position: fixed;
+  z-index: var(--global-api-toast-z-index);
+}
+
+.global-api-toast-overlay {
+  position: fixed;
+  background: transparent;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.global-api-toast-main {
+  position: fixed;
+  z-index: 2;
+  background: var(--global-api-toast-bg-color);
+  color: var(--global-api-toast-text-color);
+  border-radius: var(--global-api-toast-radius);
+  box-sizing: border-box;
+  overflow: hidden;
+  padding: 10px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.global-api-toast-main--top,
+.global-api-toast-main--bottom {
+  transform: translate(-50%, 0);
+}
+
+.global-api-toast--safe-area .global-api-toast-main--top {
+  margin-top: env(safe-area-inset-top);
+}
+
+.global-api-toast--safe-area .global-api-toast-main--bottom {
+  margin-bottom: env(safe-area-inset-bottom);
+}
+
+.global-api-toast-main--inline {
+  display: flex;
+  align-items: center;
+}
+
+.global-api-toast-main--with-icon {
+  min-width: 120px;
+}
+
+.global-api-toast-main--inline .global-api-toast-icon {
+  width: 24px;
+  height: 24px;
+  margin: 0 5px 0 0;
+  flex-shrink: 0;
+}
+
+.global-api-toast-icon {
+  width: 48px;
+  height: 48px;
+  margin: 10px auto 10px;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.global-api-toast-icon--loading {
+  border: 5px solid var(--global-api-toast-loading-border-color);
+  border-bottom-color: var(--global-api-toast-loading-border-bottom-color);
+  border-radius: 50%;
+  box-sizing: border-box;
+  animation: loadingRotation 1s linear infinite;
+}
+
+@keyframes loadingRotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.global-api-toast-title {
+  font-size: 14px;
+  line-height: 26px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  text-align: center;
+}
+
+/* animation: fade in/out */
+/* -------------------------------------- */
+.global-api-toast-fade-in {
+  animation: globalApiToastFadeIn 0.3s ease-in-out both;
+}
+
+.global-api-toast-fade-out {
+  animation: globalApiToastFadeIn 0.3s ease-in-out reverse both;
+}
+
+@keyframes globalApiToastFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* animation: down in/out */
+/* -------------------------------------- */
+.global-api-toast-down-in .global-api-toast-main {
+  animation: globalApiToastDownIn 0.3s ease-in-out both;
+}
+
+.global-api-toast-down-out .global-api-toast-main {
+  animation: globalApiToastDownIn 0.3s ease-in-out reverse both;
+}
+
+@keyframes globalApiToastDownIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, calc(-100% - 30px));
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+/* animation: up in/out */
+/* -------------------------------------- */
+.global-api-toast-up-in .global-api-toast-main {
+  animation: globalApiToastUpIn 0.3s ease-in-out both;
+}
+
+.global-api-toast-up-out .global-api-toast-main {
+  animation: globalApiToastUpIn 0.3s ease-in-out reverse both;
+}
+
+@keyframes globalApiToastUpIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, calc(100% + 30px));
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}

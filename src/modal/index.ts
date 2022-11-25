@@ -1,4 +1,5 @@
 import { Modal, ModalOptions } from './modal';
+import './index.css';
 
 export * from './modal';
 

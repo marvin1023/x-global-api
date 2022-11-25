@@ -1,4 +1,5 @@
 import { Toast, ToastOptions, LoadingOptions } from './toast';
+import './index.css';
 
 export * from './toast';
 

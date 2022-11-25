@@ -7,8 +7,9 @@ export interface ModalConfig {
   footerLayout?: ModalFooterLayout;
   footerTexts?: ModalFooterText[];
   maskCanClose?: boolean;
-  animation?: 'fade' | 'none' | string;
+  animation?: 'scale' | 'none' | string;
   isDarkModel?: boolean;
+  zIndex?: number | 'auto';
 }
 
 export interface ModalOptionsExcludeConfig {
@@ -24,21 +25,29 @@ export type ModalOptions = ModalConfig & ModalOptionsExcludeConfig;
 
 export type ModalInstanceOptions = Required<ModalConfig> & ModalOptionsExcludeConfig;
 
+export type fn = () => void;
+
 export class Modal {
   parent: Element = document.body;
   wrap: Element | null = null;
   footer: Element | null = null;
   overlay: Element | null = null;
-  isHiding = false;
   options!: ModalInstanceOptions;
+  enterClass: string | '' = '';
+  leaveClass: string | '' = '';
+  isHiding = false;
 
   static defaultConfig: Required<ModalConfig> = {
     width: '300px',
-    footerTexts: [{ text: '取消' }, { text: '确认', color: '#00cafc' }],
+    footerTexts: [
+      { text: '取消', key: 'cancel' },
+      { text: '确认', key: 'confirm' },
+    ],
     footerLayout: 'inline',
     maskCanClose: true,
-    animation: 'fade',
+    animation: 'scale',
     isDarkModel: false,
+    zIndex: 'auto',
   };
 
   static setConfig(config: ModalConfig) {
@@ -47,9 +56,7 @@ export class Modal {
 
   show(options: ModalOptions) {
     if (this.wrap) {
-      this.hide(() => {
-        this.show(options);
-      });
+      console.info('please close the current modal first!');
       return;
     }
 
@@ -72,18 +79,101 @@ export class Modal {
     this.onEventListener();
   }
 
+  hide() {
+    if (!this.wrap || this.isHiding) {
+      return;
+    }
+
+    this.isHiding = true;
+    const { animation } = this.options;
+
+    if (animation !== 'none') {
+      this.wrap.classList.add(this.leaveClass);
+    } else {
+      this.finish();
+    }
+  }
+
+  finish() {
+    if (!this.wrap) {
+      return;
+    }
+
+    this.offEventListener();
+    this.parent.removeChild(this.wrap);
+    this.wrap = null;
+    this.isHiding = false;
+    this.options.onAfterLeave?.();
+  }
+
+  onEventListener() {
+    if (!this.wrap) {
+      return;
+    }
+
+    this.footer = this.wrap.querySelector('.global-api-modal-footer');
+    this.overlay = this.wrap.querySelector('.global-api-modal-overlay');
+
+    this.wrap.addEventListener('touchmove', this.wrapTouchMoveHandler.bind(this));
+    this.wrap.addEventListener('animationend', this.wrapAnimationEndHandler.bind(this));
+    this.footer?.addEventListener('click', this.footerHandler.bind(this));
+
+    if (this.options.maskCanClose) {
+      this.overlay?.addEventListener('click', this.maskHandler.bind(this));
+    }
+  }
+
+  offEventListener() {
+    this.wrap?.removeEventListener('touchmove', this.wrapTouchMoveHandler.bind(this));
+    this.wrap?.removeEventListener('animationend', this.wrapAnimationEndHandler.bind(this));
+    this.footer?.removeEventListener('click', this.footerHandler.bind(this));
+
+    if (this.options.maskCanClose) {
+      this.overlay?.removeEventListener('click', this.maskHandler.bind(this));
+    }
+  }
+
+  wrapTouchMoveHandler(e: Event) {
+    e.preventDefault();
+  }
+
+  wrapAnimationEndHandler() {
+    const classNames = this.wrap?.className;
+    if (classNames?.includes(this.enterClass)) {
+      this.wrap?.classList.remove(this.enterClass);
+    }
+
+    if (classNames?.includes(this.leaveClass)) {
+      this.finish();
+    }
+  }
+
+  footerHandler(e: Event) {
+    const target = e.target as HTMLElement;
+    const { className, dataset } = target;
+    const { callback } = this.options;
+
+    if (className.includes('global-api-modal-footer-btn')) {
+      if (callback?.(dataset.key!) !== true) {
+        this.hide();
+      }
+    }
+  }
+
+  maskHandler() {
+    this.hide();
+  }
+
   generateHTML() {
-    const { wrapClass, footerTexts, footerLayout, width, title, content, animation, isDarkModel } = this.options;
+    const { footerTexts, footerLayout, width, title, content, animation } = this.options;
+
+    if (animation !== 'none') {
+      this.enterClass = `global-api-modal-${animation}-in`;
+      this.leaveClass = `global-api-modal-${animation}-out`;
+    }
+
     this.wrap = document.createElement('div');
-    this.wrap.classList.add('global-api-modal', `global-api-modal-${animation}-in`);
-
-    if (wrapClass) {
-      this.wrap.classList.add(wrapClass);
-    }
-
-    if (isDarkModel) {
-      this.wrap.classList.add('global-api-modal--dark');
-    }
+    this.wrapCssHandler();
 
     // HTML main
     const mainClass = `global-api-modal-main`;
@@ -114,76 +204,27 @@ export class Modal {
     this.parent.appendChild(this.wrap);
   }
 
-  onEventListener() {
+  wrapCssHandler() {
     if (!this.wrap) {
       return;
     }
+    const { zIndex, wrapClass, isDarkModel } = this.options;
 
-    this.footer = this.wrap.querySelector('.global-api-modal-footer');
-    this.overlay = this.wrap.querySelector('.global-api-overlay');
-
-    this.wrap.addEventListener('touchmouve', this.wrapHandler.bind(this));
-    this.footer?.addEventListener('click', this.footerHandler.bind(this));
-
-    if (this.options.maskCanClose) {
-      this.overlay?.addEventListener('click', this.maskHandler.bind(this));
-    }
-  }
-
-  offEventListener() {
-    this.footer?.removeEventListener('click', this.footerHandler.bind(this));
-    this.overlay?.removeEventListener('click', this.maskHandler.bind(this));
-    this.wrap?.removeEventListener('touchmouve', this.wrapHandler.bind(this));
-  }
-
-  wrapHandler(e: Event) {
-    e.preventDefault();
-  }
-
-  footerHandler(e: Event) {
-    const { className, dataset } = e.target! as HTMLElement;
-    const { callback } = this.options;
-
-    if (className.includes('global-api-modal-footer-btn')) {
-      if (callback?.(dataset.key!) !== true) {
-        this.hide();
-      }
-    }
-  }
-
-  maskHandler() {
-    this.hide();
-  }
-
-  hide(callback?: () => void) {
-    if (!this.wrap || this.isHiding) {
-      return;
+    this.wrap.classList.add('global-api-modal');
+    if (zIndex !== 'auto') {
+      this.wrap.setAttribute('style', `z-index: ${zIndex}`);
     }
 
-    this.isHiding = true;
-    const { animation, onAfterLeave } = this.options;
+    if (this.enterClass) {
+      this.wrap.classList.add(this.enterClass);
+    }
 
-    const closeHandler = () => {
-      if (!this.wrap) {
-        return;
-      }
-      if (animation !== 'none') {
-        this.wrap.removeEventListener('animationend', closeHandler);
-      }
+    if (wrapClass) {
+      this.wrap.classList.add(wrapClass);
+    }
 
-      this.offEventListener();
-      this.parent.removeChild(this.wrap);
-      this.wrap = null;
-      this.isHiding = false;
-      onAfterLeave?.();
-      callback?.();
-    };
-
-    if (animation !== 'none') {
-      this.wrap.addEventListener('animationend', closeHandler);
-      this.wrap.classList.add(`global-api-modal-${animation}-out`);
-    } else {
-      closeHandler();
+    if (isDarkModel) {
+      this.wrap.classList.add('global-api-modal--dark');
     }
   }
 }
