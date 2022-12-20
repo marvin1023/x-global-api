@@ -70,7 +70,7 @@ export class Toast {
   public show(options: ToastOptions) {
     // toast 为单例，如果有正在显示的，则直接忽略
     if (this.wrap) {
-      return;
+      this.finish();
     }
 
     const { animation, place, icon } = options;
