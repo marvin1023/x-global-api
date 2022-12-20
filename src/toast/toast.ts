@@ -34,14 +34,14 @@ export type ToastOptions = ToastConfig & ToastOptionsExcludeConfig;
 export type ToastInstanceOptions = Required<ToastConfig> & ToastOptionsExcludeConfig;
 
 export class Toast {
-  parent: Element = document.body;
-  wrap: Element | null = null;
-  isHiding = false;
-  options!: ToastInstanceOptions;
-  enterClass: string | '' = '';
-  leaveClass: string | '' = '';
+  private parent: Element = document.body;
+  private wrap: Element | null = null;
+  private isHiding = false;
+  private options!: ToastInstanceOptions;
+  private enterClass: string | '' = '';
+  private leaveClass: string | '' = '';
 
-  static defaultConfig: Required<ToastConfig> = {
+  private static defaultConfig: Required<ToastConfig> = {
     icon: 'none',
     mask: false,
     duration: 2000,
@@ -63,11 +63,11 @@ export class Toast {
     },
   };
 
-  static setConfig(config: ToastConfig) {
+  public static setConfig(config: ToastConfig) {
     Object.assign(Toast.defaultConfig, config);
   }
 
-  show(options: ToastOptions) {
+  public show(options: ToastOptions) {
     // toast 为单例，如果有正在显示的，则直接忽略
     if (this.wrap) {
       return;
@@ -120,7 +120,7 @@ export class Toast {
     }
   }
 
-  hide() {
+  public hide() {
     if (!this.wrap || this.isHiding) {
       return;
     }
@@ -135,7 +135,7 @@ export class Toast {
     }
   }
 
-  finish() {
+  private finish() {
     if (!this.wrap) {
       return;
     }
@@ -147,15 +147,15 @@ export class Toast {
     this.options.onAfterLeave?.();
   }
 
-  onEventListener() {
+  private onEventListener() {
     this.wrap?.addEventListener('animationend', this.wrapAnimationEndHandler.bind(this));
   }
 
-  offEventListener() {
+  private offEventListener() {
     this.wrap?.removeEventListener('animationend', this.wrapAnimationEndHandler.bind(this));
   }
 
-  wrapAnimationEndHandler() {
+  private wrapAnimationEndHandler() {
     const classNames = this.wrap?.className;
     if (classNames?.includes(this.enterClass)) {
       this.wrap?.classList.remove(this.enterClass);
@@ -166,7 +166,7 @@ export class Toast {
     }
   }
 
-  generateHTML() {
+  private generateHTML() {
     const { place, offset, layout, mask, icon, maxWidth, title } = this.options;
     const { iconMap } = Toast.defaultConfig;
     const { animation } = this.options;
@@ -221,7 +221,7 @@ export class Toast {
     this.parent.appendChild(this.wrap);
   }
 
-  wrapCssHandler() {
+  private wrapCssHandler() {
     const { zIndex, wrapClass, safeArea, place } = this.options;
 
     if (!this.wrap) {

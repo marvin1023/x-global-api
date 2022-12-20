@@ -24,16 +24,16 @@ export type ActionSheetOptions = ActionSheetConfig & ActionSheetOptionsExcludeCo
 export type ActionSheetInstanceOptions = Required<ActionSheetConfig> & ActionSheetOptionsExcludeConfig;
 
 export class ActionSheet {
-  parent: Element = document.body;
-  wrap: Element | null = null;
-  main: Element | null = null;
-  overlay: Element | null = null;
-  options!: ActionSheetInstanceOptions;
-  enterClass: string | '' = '';
-  leaveClass: string | '' = '';
-  isHiding = false;
+  private parent: Element = document.body;
+  private wrap: Element | null = null;
+  private main: Element | null = null;
+  private overlay: Element | null = null;
+  private options!: ActionSheetInstanceOptions;
+  private enterClass: string | '' = '';
+  private leaveClass: string | '' = '';
+  private isHiding = false;
 
-  static defaultConfig: Required<ActionSheetConfig> = {
+  private static defaultConfig: Required<ActionSheetConfig> = {
     lastItem: { text: '取消', key: 'cancel' },
     animation: 'slide',
     maskCanClose: true,
@@ -42,11 +42,11 @@ export class ActionSheet {
     zIndex: 'auto',
   };
 
-  static setConfig(config: ActionSheetConfig) {
+  public static setConfig(config: ActionSheetConfig) {
     Object.assign(ActionSheet.defaultConfig, config);
   }
 
-  show(options: ActionSheetOptions) {
+  public show(options: ActionSheetOptions) {
     if (this.wrap) {
       console.info('please close the current action sheet first!');
       return;
@@ -70,7 +70,7 @@ export class ActionSheet {
     this.onEventListener();
   }
 
-  hide() {
+  public hide() {
     if (!this.wrap || this.isHiding) {
       return;
     }
@@ -85,7 +85,7 @@ export class ActionSheet {
     }
   }
 
-  finish() {
+  private finish() {
     if (!this.wrap) {
       return;
     }
@@ -97,7 +97,7 @@ export class ActionSheet {
     this.options.onAfterLeave?.();
   }
 
-  onEventListener() {
+  private onEventListener() {
     if (!this.wrap) {
       return;
     }
@@ -114,7 +114,7 @@ export class ActionSheet {
     }
   }
 
-  offEventListener() {
+  private offEventListener() {
     this.wrap?.removeEventListener('touchmove', this.wrapTouchMoveHandler.bind(this));
     this.wrap?.removeEventListener('animationend', this.wrapAnimationEndHandler.bind(this));
     this.main?.removeEventListener('click', this.mainHandler.bind(this));
@@ -124,11 +124,11 @@ export class ActionSheet {
     }
   }
 
-  wrapTouchMoveHandler(e: Event) {
+  private wrapTouchMoveHandler(e: Event) {
     e.preventDefault();
   }
 
-  wrapAnimationEndHandler() {
+  private wrapAnimationEndHandler() {
     const classNames = this.wrap?.className;
     if (classNames?.includes(this.enterClass)) {
       this.wrap?.classList.remove(this.enterClass);
@@ -139,7 +139,7 @@ export class ActionSheet {
     }
   }
 
-  mainHandler(e: Event) {
+  private mainHandler(e: Event) {
     const target = e.target as HTMLElement;
     const { className, dataset } = target;
     const { callback } = this.options;
@@ -151,11 +151,11 @@ export class ActionSheet {
     }
   }
 
-  maskHandler() {
+  private maskHandler() {
     this.hide();
   }
 
-  generateHTML() {
+  private generateHTML() {
     const { itemList, lastItem, animation, title } = this.options;
 
     if (!itemList || itemList.length === 0) {
@@ -200,7 +200,7 @@ export class ActionSheet {
     this.parent.appendChild(this.wrap);
   }
 
-  wrapCssHandler() {
+  private wrapCssHandler() {
     if (!this.wrap) {
       return;
     }

@@ -4,5 +4,8 @@
   "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended", "prettier"],
   "globals": {
     "__dirname": false
+  },
+  "rules": {
+    "@typescript-eslint/explicit-member-accessibility": 2
   }
 }

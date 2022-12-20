@@ -28,16 +28,16 @@ export type ModalInstanceOptions = Required<ModalConfig> & ModalOptionsExcludeCo
 export type fn = () => void;
 
 export class Modal {
-  parent: Element = document.body;
-  wrap: Element | null = null;
-  footer: Element | null = null;
-  overlay: Element | null = null;
-  options!: ModalInstanceOptions;
-  enterClass: string | '' = '';
-  leaveClass: string | '' = '';
-  isHiding = false;
+  private parent: Element = document.body;
+  private wrap: Element | null = null;
+  private footer: Element | null = null;
+  private overlay: Element | null = null;
+  private options!: ModalInstanceOptions;
+  private enterClass: string | '' = '';
+  private leaveClass: string | '' = '';
+  private isHiding = false;
 
-  static defaultConfig: Required<ModalConfig> = {
+  private static defaultConfig: Required<ModalConfig> = {
     width: '300px',
     footerTexts: [
       { text: '取消', key: 'cancel' },
@@ -50,11 +50,11 @@ export class Modal {
     zIndex: 'auto',
   };
 
-  static setConfig(config: ModalConfig) {
+  public static setConfig(config: ModalConfig) {
     Object.assign(Modal.defaultConfig, config);
   }
 
-  show(options: ModalOptions) {
+  public show(options: ModalOptions) {
     if (this.wrap) {
       console.info('please close the current modal first!');
       return;
@@ -79,7 +79,7 @@ export class Modal {
     this.onEventListener();
   }
 
-  hide() {
+  public hide() {
     if (!this.wrap || this.isHiding) {
       return;
     }
@@ -94,7 +94,7 @@ export class Modal {
     }
   }
 
-  finish() {
+  private finish() {
     if (!this.wrap) {
       return;
     }
@@ -106,7 +106,7 @@ export class Modal {
     this.options.onAfterLeave?.();
   }
 
-  onEventListener() {
+  private onEventListener() {
     if (!this.wrap) {
       return;
     }
@@ -123,7 +123,7 @@ export class Modal {
     }
   }
 
-  offEventListener() {
+  private offEventListener() {
     this.wrap?.removeEventListener('touchmove', this.wrapTouchMoveHandler.bind(this));
     this.wrap?.removeEventListener('animationend', this.wrapAnimationEndHandler.bind(this));
     this.footer?.removeEventListener('click', this.footerHandler.bind(this));
@@ -133,11 +133,11 @@ export class Modal {
     }
   }
 
-  wrapTouchMoveHandler(e: Event) {
+  private wrapTouchMoveHandler(e: Event) {
     e.preventDefault();
   }
 
-  wrapAnimationEndHandler() {
+  private wrapAnimationEndHandler() {
     const classNames = this.wrap?.className;
     if (classNames?.includes(this.enterClass)) {
       this.wrap?.classList.remove(this.enterClass);
@@ -148,7 +148,7 @@ export class Modal {
     }
   }
 
-  footerHandler(e: Event) {
+  private footerHandler(e: Event) {
     const target = e.target as HTMLElement;
     const { className, dataset } = target;
     const { callback } = this.options;
@@ -160,11 +160,11 @@ export class Modal {
     }
   }
 
-  maskHandler() {
+  private maskHandler() {
     this.hide();
   }
 
-  generateHTML() {
+  private generateHTML() {
     const { footerTexts, footerLayout, width, title, content, animation } = this.options;
 
     if (animation !== 'none') {
@@ -204,7 +204,7 @@ export class Modal {
     this.parent.appendChild(this.wrap);
   }
 
-  wrapCssHandler() {
+  private wrapCssHandler() {
     if (!this.wrap) {
       return;
     }
