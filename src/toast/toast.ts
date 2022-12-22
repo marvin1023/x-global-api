@@ -40,6 +40,7 @@ export class Toast {
   private options!: ToastInstanceOptions;
   private enterClass: string | '' = '';
   private leaveClass: string | '' = '';
+  private timer?: ReturnType<typeof setTimeout>;
 
   private static defaultConfig: Required<ToastConfig> = {
     icon: 'none',
@@ -113,9 +114,8 @@ export class Toast {
 
     // auto hide
     if (duration) {
-      const timer = setTimeout(() => {
+      this.timer = setTimeout(() => {
         this.hide();
-        clearTimeout(timer);
       }, duration);
     }
   }
@@ -138,6 +138,10 @@ export class Toast {
   private finish() {
     if (!this.wrap) {
       return;
+    }
+
+    if (this.timer) {
+      clearTimeout(this.timer);
     }
 
     this.offEventListener();
