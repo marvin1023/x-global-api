@@ -38,6 +38,7 @@ import 'x-global-api/dist/esm/index.css';
 //   layout: 'block',
 //   animation: 'fade',
 //   zIndex: 'auto',
+//   multiLine: false,
 //   iconMap: {
 //     success: 'xxx', // success icon 的地址，默认用了一个base64图标，太长，所以这里用xxx表示，下面的 error，warning 一样
 //     error: 'xxx',
@@ -135,6 +136,7 @@ export interface ToastConfig {
   animation?: ToastAnimation; // 使用什么动画
   iconMap?: ToastIconMap; // 图标类型所使用的图片
   zIndex?: number | 'auto';
+  multiLine?: boolean; // 开启多行，不然会单行省略
 }
 
 export interface ToastOptionsExcludeConfig {

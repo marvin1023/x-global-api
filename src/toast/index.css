@@ -95,10 +95,13 @@
 .global-api-toast-title {
   font-size: 14px;
   line-height: 26px;
+  text-align: center;
+}
+
+.global-api-toast-title--ellipsis {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  text-align: center;
 }
 
 /* animation: fade in/out */

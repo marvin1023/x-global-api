@@ -15,6 +15,7 @@ export interface ToastConfig {
   animation?: ToastAnimation;
   iconMap?: ToastIconMap;
   zIndex?: number | 'auto';
+  multiLine?: boolean; // 开启多行，不然会单行省略
 }
 
 export interface ToastOptionsExcludeConfig {
@@ -51,6 +52,7 @@ export class Toast {
     layout: 'block',
     animation: 'fade',
     zIndex: 'auto',
+    multiLine: false,
     iconMap: {
       success:
         'data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTYgMTYiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iOCIgY3k9IjgiIHI9IjgiIGZpbGw9IiMxNUQxNzMiPjwvY2lyY2xlPjxwYXRoIGQ9Ik00LjU1MTUxIDcuNjAwMUw3LjE4MjEzIDEwLjIzMDZMMTEuOTE2MSA1LjQ5NjY4IiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PC9wYXRoPjwvc3ZnPg==',
@@ -171,7 +173,7 @@ export class Toast {
   }
 
   private generateHTML() {
-    const { place, offset, layout, mask, icon, maxWidth, title } = this.options;
+    const { place, offset, layout, mask, icon, maxWidth, title, multiLine } = this.options;
     const { iconMap } = Toast.defaultConfig;
     const { animation } = this.options;
 
@@ -192,6 +194,11 @@ export class Toast {
       mainClass += ` global-api-toast-main--inline`;
     } else if (hasIcon) {
       mainClass += ` global-api-toast-main--with-icon`;
+    }
+
+    let titleClass = 'global-api-toast-title';
+    if (!multiLine) {
+      titleClass += ` global-api-toast-title--ellipsis`;
     }
 
     // place
@@ -216,7 +223,7 @@ export class Toast {
     const maskHTML = mask ? '<div class="global-api-toast-overlay"></div>' : '';
     const mainHTMlBegin = `<div class="${mainClass}" style="max-width: ${maxWidth}; ${placeStyle}">`;
     const iconHTML = hasIcon ? `<div class="${iconClass}" style="background-image: url(${iconUrl})"></div>` : '';
-    const titleHTML = title ? `<div class="global-api-toast-title">${title}</div>` : '';
+    const titleHTML = title ? `<div class="${titleClass}">${title}</div>` : '';
     const mainHTMlEnd = '</div>';
 
     const innerHTML = maskHTML + mainHTMlBegin + iconHTML + titleHTML + mainHTMlEnd;
