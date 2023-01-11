@@ -201,8 +201,6 @@ export class Toast {
       titleClass += ` global-api-toast-title--ellipsis`;
     }
 
-    // place
-
     const iconUrl = iconMap[icon];
     let iconClass = 'global-api-toast-icon';
     if (icon === 'loading' && iconUrl === '') {
