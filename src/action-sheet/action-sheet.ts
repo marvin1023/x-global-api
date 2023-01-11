@@ -14,7 +14,7 @@ export interface ActionSheetOptionsExcludeConfig {
   title?: string;
   itemList?: ActionSheetItem[];
   callback?: ActionSheetCallback;
-  parent?: Element;
+  parent?: HTMLElement;
   wrapClass?: string;
   onAfterLeave?(): void;
 }
@@ -24,10 +24,10 @@ export type ActionSheetOptions = ActionSheetConfig & ActionSheetOptionsExcludeCo
 export type ActionSheetInstanceOptions = Required<ActionSheetConfig> & ActionSheetOptionsExcludeConfig;
 
 export class ActionSheet {
-  private parent: Element = document.body;
-  private wrap: Element | null = null;
-  private main: Element | null = null;
-  private overlay: Element | null = null;
+  private parent: HTMLElement = document.body;
+  private wrap: HTMLElement | null = null;
+  private main: HTMLElement | null = null;
+  private overlay: HTMLElement | null = null;
   private options!: ActionSheetInstanceOptions;
   private enterClass: string | '' = '';
   private leaveClass: string | '' = '';

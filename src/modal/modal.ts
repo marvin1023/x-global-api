@@ -16,7 +16,7 @@ export interface ModalOptionsExcludeConfig {
   title?: string;
   content?: string;
   callback?: ModalFooterCallback;
-  parent?: Element;
+  parent?: HTMLElement;
   wrapClass?: string;
   onAfterLeave?(): void;
 }
@@ -28,10 +28,10 @@ export type ModalInstanceOptions = Required<ModalConfig> & ModalOptionsExcludeCo
 export type fn = () => void;
 
 export class Modal {
-  private parent: Element = document.body;
-  private wrap: Element | null = null;
-  private footer: Element | null = null;
-  private overlay: Element | null = null;
+  private parent: HTMLElement = document.body;
+  private wrap: HTMLElement | null = null;
+  private footer: HTMLElement | null = null;
+  private overlay: HTMLElement | null = null;
   private options!: ModalInstanceOptions;
   private enterClass: string | '' = '';
   private leaveClass: string | '' = '';

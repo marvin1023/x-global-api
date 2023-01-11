@@ -19,7 +19,7 @@ export interface ToastConfig {
 }
 
 export interface ToastOptionsExcludeConfig {
-  parent?: Element;
+  parent?: HTMLElement;
   iconUrl?: string;
   title?: string;
   wrapClass?: string;
@@ -35,8 +35,8 @@ export type ToastOptions = ToastConfig & ToastOptionsExcludeConfig;
 export type ToastInstanceOptions = Required<ToastConfig> & ToastOptionsExcludeConfig;
 
 export class Toast {
-  private parent: Element = document.body;
-  private wrap: Element | null = null;
+  private parent: HTMLElement = document.body;
+  private wrap: HTMLElement | null = null;
   private isHiding = false;
   private options!: ToastInstanceOptions;
   private enterClass: string | '' = '';
@@ -173,7 +173,7 @@ export class Toast {
   }
 
   private generateHTML() {
-    const { place, offset, layout, mask, icon, maxWidth, title, multiLine } = this.options;
+    const { layout, mask, icon, maxWidth, title, multiLine } = this.options;
     const { iconMap } = Toast.defaultConfig;
     const { animation } = this.options;
 
@@ -202,17 +202,6 @@ export class Toast {
     }
 
     // place
-    let placeStyle = 'top: 50%; ';
-
-    if (place === 'top') {
-      placeStyle = `top: ${offset};`;
-      mainClass += ` global-api-toast-main--top`;
-    }
-
-    if (place === 'bottom') {
-      placeStyle = `bottom: ${offset};`;
-      mainClass += ` global-api-toast-main--bottom`;
-    }
 
     const iconUrl = iconMap[icon];
     let iconClass = 'global-api-toast-icon';
@@ -221,7 +210,7 @@ export class Toast {
     }
 
     const maskHTML = mask ? '<div class="global-api-toast-overlay"></div>' : '';
-    const mainHTMlBegin = `<div class="${mainClass}" style="max-width: ${maxWidth}; ${placeStyle}">`;
+    const mainHTMlBegin = `<div class="${mainClass}" style="max-width: ${maxWidth};">`;
     const iconHTML = hasIcon ? `<div class="${iconClass}" style="background-image: url(${iconUrl})"></div>` : '';
     const titleHTML = title ? `<div class="${titleClass}">${title}</div>` : '';
     const mainHTMlEnd = '</div>';
@@ -233,7 +222,7 @@ export class Toast {
   }
 
   private wrapCssHandler() {
-    const { zIndex, wrapClass, safeArea, place } = this.options;
+    const { zIndex, wrapClass, safeArea, place, offset } = this.options;
 
     if (!this.wrap) {
       return;
@@ -254,6 +243,18 @@ export class Toast {
 
     if (safeArea && place !== 'center') {
       this.wrap.classList.add('global-api-toast--safe-area');
+    }
+
+    if (place === 'top') {
+      // placeStyle = `top: ${offset};`;
+      this.wrap.classList.add('global-api-toast--top');
+      this.wrap.style.setProperty('top', offset!);
+    } else if (place === 'bottom') {
+      // placeStyle = `bottom: ${offset};`;
+      this.wrap.classList.add('global-api-toast--bottom');
+      this.wrap.style.setProperty('bottom', offset!);
+    } else {
+      this.wrap.style.setProperty('top', '50%');
     }
   }
 }
