@@ -327,6 +327,16 @@ export type ActionSheetInstanceOptions = Required<ActionSheetConfig> & ActionShe
 }
 ```
 
+## 查看 demo
+
+运行命令，开启本地服务：
+
+```bash
+npm run dev
+```
+
+访问 example 目录中的 html 文件即可预览，如预览 toast demo： `http://127.0.0.1:5173/example/toast.html`
+
 ## 注意事项
 
 - toast 和 loading 公用一个实例，每次只能有一个出现，如果有新的要 show，那么老的就会被移除掉。

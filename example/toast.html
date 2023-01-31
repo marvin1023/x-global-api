@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>toast example</title>
+    <script src="./toast.ts" type="module"></script>
+  </head>
+  <body>
+    <div class="demo">
+      <h2>toast title</h2>
+      <div class="group">
+        <button class="btn" data-place="center" data-title="hello the world">toast center</button>
+        <button class="btn" data-place="top" data-title="hello the world">toast top</button>
+        <button class="btn" data-place="bottom" data-title="hello the world">toast bottom</button>
+      </div>
+      <h2>toast icon & title block</h2>
+      <div class="group">
+        <button class="btn" data-icon="loading">loading</button>
+        <button class="btn" data-action="close">hide loading</button>
+        <button class="btn" data-icon="success">success</button>
+        <button class="btn" data-icon="warning">warning</button>
+        <button class="btn" data-icon="error">error</button>
+      </div>
+      <h2>toast icon & title inline</h2>
+      <div class="group">
+        <button class="btn" data-title="hello the world" data-layout="inline" data-icon="loading">loading</button>
+        <button class="btn" data-title="hello the world" data-layout="inline" data-action="close">hide loading</button>
+        <button class="btn" data-title="hello the world" data-layout="inline" data-icon="success">success</button>
+        <button class="btn" data-title="hello the world" data-layout="inline" data-icon="warning">warning</button>
+        <button class="btn" data-title="hello the world" data-layout="inline" data-icon="error">error</button>
+      </div>
+      <h2>toast safeArea</h2>
+      <div class="group">
+        <button class="btn" data-title="hello the world" data-place="top" data-safe-area="true">
+          toast bottom safeArea
+        </button>
+        <button class="btn" data-title="hello the world" data-place="bottom" data-safe-area="true">
+          toast top safeArea
+        </button>
+      </div>
+
+      <h2>toast mask</h2>
+      <div class="group">
+        <button class="btn" data-title="hello the world" data-mask="true">toast mask</button>
+      </div>
+      <h2>toast multi line</h2>
+      <div class="group">
+        <button
+          class="btn"
+          data-title="toast multi line, toast multi line, toast multi line, toast multi line, toast multi line, toast multi line"
+          data-multi-line="true"
+        >
+          multi line
+        </button>
+        <button
+          class="btn"
+          data-title="toast multi line, toast multi line, toast multi line, toast multi line, toast multi line, toast multi line"
+        >
+          multi line
+        </button>
+      </div>
+    </div>
+  </body>
+</html>
