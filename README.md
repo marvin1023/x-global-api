@@ -77,7 +77,7 @@ import { Modal, showModal, ModalConfig, ModalOptions } from 'x-global-api';
 // 默认参数 Modal.defaultConfig
 // {
 //   width: '300px',
-//   footerTexts: [{ text: '取消', key: 'cancel' }, { text: '确认', key: 'confirm' }],
+//   footerButtons: [{ text: '取消', key: 'cancel' }, { text: '确认', key: 'confirm' }],
 //   footerLayout: 'inline',
 //   maskCanClose: true,
 //   animation: 'fade',
@@ -109,7 +109,7 @@ import { ActionSheet, showActionSheet, ActionSheetConfig, ActionSheetOptions } f
 // 可通过静态方法 setConfig 更新默认配置
 ActionSheet.setConfig(config: ActionSheetConfig);
 
-showActionSheet(options: ActionSheetOptions); // ModalOptions 见下面 TS 类型
+showActionSheet(options: ActionSheetOptions); // ActionSheetOptions 见下面 TS 类型
 ```
 
 ## 详细说明
@@ -154,13 +154,13 @@ export type ToastOptions = ToastConfig & ToastOptionsExcludeConfig;
 
 // modal
 // -----------------------------------------
-export type ModalFooterText = { text: string; color?: string; key?: string };
-export type ModalFooterCallback = (key: string) => void | boolean; // key 对应 ModalFooterText 中的 key，如没有，则为 index 值。
+export type ModalFooterButton = { text: string; color?: string; key?: string };
+export type ModalFooterButtonCallback = (key: string) => void | boolean; // key 对应 ModalFooterButton 中的 key，如没有，则为 index 值。
 export type ModalFooterLayout = 'inline' | 'block';
 
 export interface ModalConfig {
   width?: string;
-  footerTexts?: ModalFooterText[]; // 底部按钮
+  footerButtons?: ModalFooterButton[]; // 底部按钮
   footerLayout?: ModalFooterLayout; // 底部按钮布局，inline 所有按钮一行显示，block 表示各自一行
   maskCanClose?: boolean;
   animation?: 'scale' | 'none' | string; // 动画
@@ -171,7 +171,7 @@ export interface ModalConfig {
 export interface ModalOptionsExcludeConfig {
   title?: string;
   content?: string;
-  callback?: ModalFooterCallback; // 按钮点击对应的回调，如果 return true 则不关闭该弹窗
+  callback?: ModalFooterButtonCallback; // 按钮点击对应的回调，如果 return true 则不关闭该弹窗
   parent?: Element;
   wrapClass?: string; // 添加的 class
   onAfterLeave?(): void; // modal 消失之后的回调

@@ -1,11 +1,11 @@
-export type ModalFooterText = { text: string; color?: string; key?: string };
-export type ModalFooterCallback = (key: string) => void | boolean; // key 对应 ModalFooterText 中的 key，如没有，则为 index 值。
+export type ModalFooterButton = { text: string; color?: string; key?: string };
+export type ModalFooterButtonCallback = (key: string) => void | boolean; // key 对应 ModalFooterButton 中的 key，如没有，则为 index 值。
 export type ModalFooterLayout = 'inline' | 'block';
 
 export interface ModalConfig {
   width?: string;
   footerLayout?: ModalFooterLayout;
-  footerTexts?: ModalFooterText[];
+  footerButtons?: ModalFooterButton[];
   maskCanClose?: boolean;
   animation?: 'scale' | 'none' | string;
   isDarkModel?: boolean;
@@ -15,7 +15,7 @@ export interface ModalConfig {
 export interface ModalOptionsExcludeConfig {
   title?: string;
   content?: string;
-  callback?: ModalFooterCallback;
+  callback?: ModalFooterButtonCallback;
   parent?: HTMLElement;
   wrapClass?: string;
   onAfterLeave?(): void;
@@ -39,7 +39,7 @@ export class Modal {
 
   private static defaultConfig: Required<ModalConfig> = {
     width: '300px',
-    footerTexts: [
+    footerButtons: [
       { text: '取消', key: 'cancel' },
       { text: '确认', key: 'confirm' },
     ],
@@ -165,7 +165,7 @@ export class Modal {
   }
 
   private generateHTML() {
-    const { footerTexts, footerLayout, width, title, content, animation } = this.options;
+    const { footerButtons, footerLayout, width, title, content, animation } = this.options;
 
     if (animation !== 'none') {
       this.enterClass = `global-api-modal-${animation}-in`;
@@ -180,8 +180,8 @@ export class Modal {
     const footerClass = `global-api-modal-footer global-api-modal-footer--${footerLayout}`;
 
     let btnHTML = '';
-    if (footerTexts.length > 0) {
-      btnHTML = footerTexts.reduce((prev, next, index) => {
+    if (footerButtons.length > 0) {
+      btnHTML = footerButtons.reduce((prev, next, index) => {
         const style = next.color ? `color: ${next.color};` : '';
         return (
           prev +
