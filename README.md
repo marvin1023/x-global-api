@@ -98,7 +98,7 @@ import { ActionSheet, showActionSheet, ActionSheetConfig, ActionSheetOptions } f
 
 // 默认参数 ActionSheet.defaultConfig
 // {
-//   lastItem: { text: '取消', key: 'cancel' },
+//   cancel: { text: '取消', key: 'cancel' },
 //   animation: 'slide',
 //   maskCanClose: true,
 //   isDarkModel: false,
@@ -182,11 +182,11 @@ export type ModalOptions = ModalConfig & ModalOptionsExcludeConfig;
 
 // action-sheet
 // -----------------------------------------
-export type ActionSheetItem = { text: string; color?: string; key?: string };
+export type ActionSheetItem = { text: string; color?: string; key?: string } | string;
 export type ActionSheetCallback = (key: string) => void | boolean; // key 对应 ActionSheetItem 中的 key，如没有，则为 index 值。
 
 export interface ActionSheetConfig {
-  lastItem?: ActionSheetItem | false;
+  cancel?: ActionSheetItem | false;
   animation?: 'slide' | 'none' | string;
   maskCanClose?: boolean;
   isDarkModel?: boolean;
@@ -196,7 +196,7 @@ export interface ActionSheetConfig {
 
 export interface ActionSheetOptionsExcludeConfig {
   title?: string;
-  itemList?: ActionSheetItem[];
+  items?: ActionSheetItem[];
   callback?: ActionSheetCallback;
   parent?: Element;
   wrapClass?: string;
@@ -235,6 +235,8 @@ export type ActionSheetInstanceOptions = Required<ActionSheetConfig> & ActionShe
   --global-api-action-sheet-bg-color: #fff;
   --global-api-action-sheet-divide-bg-color: #f7f7f7;
   --global-api-action-sheet-bg-active-color: #ededed;
+  --global-api-action-sheet-font-size: 16px;
+  --global-api-action-sheet-title-color: #999;
   --global-api-action-sheet-text-color: #000;
   --global-api-action-sheet-radius: 8px;
   --global-api-action-sheet-z-index: 5000;

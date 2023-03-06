@@ -1,8 +1,8 @@
-export type ActionSheetItem = { text: string; color?: string; key?: string };
+export type ActionSheetItem = { text: string; color?: string; key?: string } | string;
 export type ActionSheetCallback = (key: string) => void | boolean; // key 对应 ActionSheetItem 中的 key，如没有，则为 index 值。
 
 export interface ActionSheetConfig {
-  lastItem?: ActionSheetItem | false;
+  cancel?: ActionSheetItem | false;
   animation?: 'slide' | 'none' | string;
   maskCanClose?: boolean;
   isDarkModel?: boolean;
@@ -12,7 +12,7 @@ export interface ActionSheetConfig {
 
 export interface ActionSheetOptionsExcludeConfig {
   title?: string;
-  itemList?: ActionSheetItem[];
+  items?: ActionSheetItem[];
   callback?: ActionSheetCallback;
   parent?: HTMLElement;
   wrapClass?: string;
@@ -34,7 +34,7 @@ export class ActionSheet {
   private isHiding = false;
 
   private static defaultConfig: Required<ActionSheetConfig> = {
-    lastItem: { text: '取消', key: 'cancel' },
+    cancel: { text: '取消', key: 'cancel' },
     animation: 'slide',
     maskCanClose: true,
     isDarkModel: false,
@@ -53,10 +53,10 @@ export class ActionSheet {
     }
 
     this.options = Object.assign({}, ActionSheet.defaultConfig, options);
-    const { parent, itemList } = this.options;
+    const { parent, items } = this.options;
 
-    if (!itemList || itemList.length === 0) {
-      console.error('itemList is required!');
+    if (!items || items.length === 0) {
+      console.error('items is required!');
       return;
     }
 
@@ -156,9 +156,9 @@ export class ActionSheet {
   }
 
   private generateHTML() {
-    const { itemList, lastItem, animation, title } = this.options;
+    const { items, cancel, animation, title } = this.options;
 
-    if (!itemList || itemList.length === 0) {
+    if (!items || items.length === 0) {
       return;
     }
 
@@ -170,7 +170,24 @@ export class ActionSheet {
     this.wrap = document.createElement('div');
     this.wrapCssHandler();
 
-    const itemHTML = itemList.reduce((prev, next, index) => {
+    const maskHTML = '<div class="global-api-action-sheet-overlay"></div>';
+    const mainHTMlBegin = `<div class="global-api-action-sheet-main">`;
+    const titleHTML = title ? `<div class="global-api-action-sheet-title">${title}</div>` : '';
+    const contentHTML = this.generateContent(items);
+    const footerHtml = this.generateFooter();
+    const mainHTMlEnd = '</div>';
+
+    const innerHTML = maskHTML + mainHTMlBegin + titleHTML + contentHTML + footerHtml + mainHTMlEnd;
+
+    this.wrap.innerHTML = innerHTML;
+    this.parent.appendChild(this.wrap);
+  }
+
+  private generateContent(items: ActionSheetItem[]) {
+    const itemHTML = items.reduce((prev, next, index) => {
+      if (typeof next === 'string') {
+        return prev + `<div class="global-api-action-sheet-item" data-key="${index}">${next}</div>`;
+      }
       return (
         prev +
         `<div class="global-api-action-sheet-item" data-key="${next.key || index}" style="color: ${
@@ -179,25 +196,26 @@ export class ActionSheet {
       );
     }, '');
 
-    const lastItemHTML =
-      lastItem &&
-      `<div class="global-api-action-sheet-item" data-key="${lastItem.key || itemList.length}" style="color: ${
-        lastItem.color || 'currentColor'
-      }">${lastItem.text}</div>`;
+    return `<div class="global-api-action-sheet-content">${itemHTML}</div>`;
+  }
 
-    const maskHTML = '<div class="global-api-action-sheet-overlay"></div>';
-    const mainHTMlBegin = `<div class="global-api-action-sheet-main">`;
-    const titleHTML = title ? `<div class="global-api-action-sheet-title">${title}</div>` : '';
-    const contentHTML = `<div class="global-api-action-sheet-content">${itemHTML}</div>`;
-    const footerHtml = lastItemHTML
-      ? `<div class="global-api-action-sheet-divide"></div><div class="global-api-action-sheet-footer">${lastItemHTML}</div>`
-      : '';
-    const mainHTMlEnd = '</div>';
+  private generateFooter() {
+    const { cancel } = this.options;
+    if (!cancel) {
+      return '';
+    }
 
-    const innerHTML = maskHTML + mainHTMlBegin + titleHTML + contentHTML + footerHtml + mainHTMlEnd;
+    let cancelHTML = '';
 
-    this.wrap.innerHTML = innerHTML;
-    this.parent.appendChild(this.wrap);
+    if (typeof cancel === 'string') {
+      cancelHTML = `<div class="global-api-action-sheet-item" data-key="cancel">${cancel}</div>`;
+    } else {
+      cancelHTML = `<div class="global-api-action-sheet-item" data-key="${cancel.key || 'cancel'}" style="color: ${
+        cancel.color || 'currentColor'
+      }">${cancel.text}</div>`;
+    }
+
+    return `<div class="global-api-action-sheet-divide"></div><div class="global-api-action-sheet-footer">${cancelHTML}</div>`;
   }
 
   private wrapCssHandler() {

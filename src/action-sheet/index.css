@@ -5,12 +5,14 @@
   --global-api-action-sheet-bg-color: #fff;
   --global-api-action-sheet-divide-bg-color: #f7f7f7;
   --global-api-action-sheet-bg-active-color: #ededed;
+  --global-api-action-sheet-font-size: 16px;
+  --global-api-action-sheet-title-color: #999;
   --global-api-action-sheet-text-color: #000;
   --global-api-action-sheet-radius: 8px;
   --global-api-action-sheet-z-index: 5000;
 }
 
-/* modal */
+/* action-sheet */
 /* -------------------------------------- */
 .global-api-action-sheet {
   position: fixed;
@@ -28,6 +30,7 @@
   --global-api-action-sheet-text-color: #fff;
   --global-api-action-sheet-divide-bg-color: rgba(255, 255, 255, 0.1);
   --global-api-action-sheet-btn-border-color: rgba(255, 255, 255, 0.1);
+  --global-api-action-sheet-title-color: #5d6064;
 }
 
 .global-api-action-sheet-overlay {
@@ -48,7 +51,7 @@
   color: var(--global-api-action-sheet-text-color);
   border-radius: var(--global-api-action-sheet-radius) var(--global-api-action-sheet-radius) 0 0;
   overflow: hidden;
-  font-size: 16px;
+  font-size: var(--global-api-action-sheet-font-size);
 }
 
 .global-api-action-sheet--safe-area .global-api-action-sheet-main {
@@ -62,6 +65,7 @@
   text-align: center;
   line-height: 1.5;
   border-bottom: 1px solid var(--global-api-action-sheet-divide-bg-color);
+  color: var(--global-api-action-sheet-title-color);
 }
 
 .global-api-action-sheet-item {
